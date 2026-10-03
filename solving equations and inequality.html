@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Workspace: Equations & Inequalities</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- KaTeX for Math Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      .print-break-inside-avoid { break-inside: avoid; }
+      body { background-color: white !important; font-size: 11pt; }
+      .workspace-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; margin-bottom: 1.5rem !important; }
+      .canvas-container { border: 1px dashed #94a3b8 !important; background-color: #ffffff !important; }
+    }
+    canvas { touch-action: none; cursor: crosshair; }
+    .grid-bg {
+      background-size: 20px 20px;
+      background-image: 
+        linear-gradient(to right, rgba(226, 232, 240, 0.7) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(226, 232, 240, 0.7) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen font-sans text-slate-800 pb-16">
+
+  <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40 no-print">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 bg-indigo-600 rounded-lg text-white">
+          <i class="fa-solid fa-square-root-variable text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight">Math Workspace: Equations & Inequalities</h1>
+          <p class="text-xs text-slate-400">Algebraic Solutions & Step-by-Step Working Space</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 w-full md:w-auto justify-end flex-wrap">
+        <input id="student-name" type="text" placeholder="Student Name..." class="px-3 py-1.5 text-sm bg-slate-800 text-slate-100 border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 w-36 md:w-44" />
+        
+        <button onclick="randomizeAllQuestions()" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-md text-sm font-medium transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-dice text-sm"></i> Randomize Questions
+        </button>
+
+        <button onclick="window.print()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm font-medium transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-print"></i> Print
+        </button>
+
+        <div class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-md text-xs font-mono text-emerald-400 flex items-center gap-2">
+          <span>Total Score:</span>
+          <span id="total-score-display" class="font-bold text-sm text-white">0 / 25</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4 mt-6">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <span class="inline-block px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-700 bg-indigo-50 rounded-full mb-2">Student Practice Worksheet</span>
+        <h2 class="text-2xl font-bold text-slate-900">Equations & Inequalities Workspace</h2>
+        <p class="text-slate-600 text-sm mt-1">Annotate your working directly on the grid canvas or upload a photo of your handwritten work.</p>
+      </div>
+      <div class="hidden print:block text-right text-xs text-slate-700 space-y-1">
+        <p class="font-bold text-sm text-slate-900">Student: ______________________</p>
+        <p>Date: ________________________</p>
+        <p>Total Score: ______ / 25 Marks</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="max-w-6xl mx-auto px-4 mt-8 space-y-8" id="questions-container">
+    <!-- Questions dynamically injected here -->
+  </main>
+
+  <script>
+    let questionsData = [];
+    const canvases = {};
+    const ctxs = {};
+    const states = {};
+    const questionScores = {};
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateQuestions() {
+      // Q1: Rational Equation (3 Marks) [e.g., (5x - 1)/(3x - 2) = 3]
+      const q1A = randInt(4, 7);
+      const q1B = randInt(1, 5);
+      const q1C = randInt(2, 4);
+      const q1D = randInt(1, 4);
+      const q1E = randInt(2, 4);
+      // Equation: (Ax - B)/(Cx - D) = E => Ax - B = E(Cx - D) => Ax - B = ECx - ED => (EC - A)x = ED - B => x = (ED - B)/(EC - A)
+      const q1Numerator = (q1E * q1D) - q1B;
+      const q1Denominator = (q1E * q1C) - q1A;
+      const q1AnsStr = q1Denominator !== 0 ? (q1Numerator / q1Denominator).toFixed(2) : "Undefined";
+
+      // Q2: Quadratic Equation with Decimals or Standard (4 Marks) [e.g., 0.01x^2 + 0.2x - 3.51 = 0 or x^2 - 7x + 10 = 0]
+      const useDecimals = Math.random() > 0.5;
+      let q2Text = "";
+      let q2Ans1 = 0, q2Ans2 = 0;
+      if (useDecimals) {
+        const r1 = randInt(-15, -1) * 0.1;
+        const r2 = randInt(1, 15) * 0.1;
+        const bCoeff = (-(r1 + r2)).toFixed(2);
+        const cCoeff = (r1 * r2).toFixed(2);
+        const bSign = bCoeff >= 0 ? `+ ${bCoeff}` : `- ${Math.abs(bCoeff)}`;
+        const cSign = cCoeff >= 0 ? `+ ${cCoeff}` : `- ${Math.abs(cCoeff)}`;
+        q2Text = `Solve the quadratic equation with decimals:<br/><div class="my-2 text-center text-lg font-semibold">$0.01x^2 ${bSign}x ${cSign} = 0$</div>`;
+        q2Ans1 = r1;
+        q2Ans2 = r2;
+      } else {
+        const r1 = randInt(-8, 8);
+        let r2 = randInt(-8, 8);
+        if (r1 === r2) r2 += 2;
+        const bCoeff = -(r1 + r2);
+        const cCoeff = r1 * r2;
+        const bSign = bCoeff >= 0 ? `+ ${bCoeff}` : `- ${Math.abs(bCoeff)}`;
+        const cSign = cCoeff >= 0 ? `+ ${cCoeff}` : `- ${Math.abs(cCoeff)}`;
+        q2Text = `Solve the quadratic equation by factoring or using the quadratic formula:<br/><div class="my-2 text-center text-lg font-semibold">$x^2 ${bSign}x ${cSign} = 0$</div>`;
+        q2Ans1 = r1;
+        q2Ans2 = r2;
+      }
+
+      // Q3: Algebraic Fraction Equation (5 Marks) [e.g., (2x+3)/(x+1) = (x-1)/x]
+      const q3A = randInt(2, 4);
+      const q3B = randInt(1, 5);
+      const q3C = randInt(1, 3);
+      const q3D = randInt(1, 4);
+      // (Ax + B) / (x + C) = (x - D) / x  => x(Ax + B) = (x + C)(x - D)
+      // Ax^2 + Bx = x^2 + (C - D)x - CD => (A - 1)x^2 + (B - C + D)x + CD = 0
+
+      // Q4: Fractional Linear Inequality (4 Marks) [e.g., (3x - 1)/4 > (x + 5)/2]
+      const q4A = randInt(3, 6);
+      const q4B = randInt(1, 5);
+      const q4C = 4;
+      const q4D = randInt(1, 2);
+      const q4E = randInt(2, 6);
+      const q4F = 2;
+
+      // Q5: Compound Linear Inequality (4 Marks) [e.g., -5 <= 2x + 3 < 11]
+      const q5L = randInt(-8, -3);
+      const q5A = randInt(2, 4);
+      const q5B = randInt(1, 5);
+      const q5R = randInt(7, 15);
+
+      // Q6: Quadratic Inequality (5 Marks) [e.g., x^2 - 5x - 14 <= 0 or x^2 - 2x - 15 > 0]
+      const rA = randInt(-5, -2);
+      const rB = randInt(3, 7);
+      const q6B = -(rA + rB);
+      const q6C = rA * rB;
+      const b6Sign = q6B >= 0 ? `+ ${q6B}` : `- ${Math.abs(q6B)}`;
+      const c6Sign = q6C >= 0 ? `+ ${q6C}` : `- ${Math.abs(q6C)}`;
+      const isLessEqual = Math.random() > 0.5;
+      const opStr = isLessEqual ? `\\le 0` : `> 0`;
+
+      questionsData = [
+        {
+          id: 1,
+          category: "Part A: Algebraic Equations",
+          title: "Question 1 • Rational Equation",
+          marks: 3,
+          color: "indigo",
+          text: `Solve the rational algebraic equation:<br/><div class="my-2 text-center text-lg font-semibold">$\\frac{${q1A}x - ${q1B}}{${q1C}x - ${q1D}} = ${q1E}$</div>`,
+          hint: `
+            <p><strong>Hint 1:</strong> Multiply both sides by the denominator $(${q1C}x - ${q1D})$ to clear the fraction.</p>
+            <p><strong>Hint 2:</strong> Expand the right-hand side: $${q1A}x - ${q1B} = ${q1E}(${q1C}x - ${q1D})$.</p>
+            <p><strong>Hint 3:</strong> Collect all $x$ terms on one side and constant terms on the other to solve for $x$.</p>
+          `
+        },
+        {
+          id: 2,
+          category: "Part A: Algebraic Equations",
+          title: "Question 2 • Quadratic Equation",
+          marks: 4,
+          color: "indigo",
+          text: q2Text,
+          hint: `
+            <p><strong>Hint 1:</strong> Identify coefficients $a, b, c$ for $a x^2 + b x + c = 0$.</p>
+            <p><strong>Hint 2:</strong> You can use factoring or the quadratic formula: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$.</p>
+            <p><strong>Hint 3:</strong> Make sure to state both values of $x$.</p>
+          `
+        },
+        {
+          id: 3,
+          category: "Part A: Algebraic Equations",
+          title: "Question 3 • Algebraic Fraction Equation",
+          marks: 5,
+          color: "indigo",
+          text: `Solve the algebraic fraction equation by cross-multiplication:<br/><div class="my-2 text-center text-lg font-semibold">$\\frac{${q3A}x + ${q3B}}{x + ${q3C}} = \\frac{x - ${q3D}}{x}$</div>`,
+          hint: `
+            <p><strong>Hint 1:</strong> Cross-multiply to eliminate denominators: $x(${q3A}x + ${q3B}) = (x + ${q3C})(x - ${q3D})$.</p>
+            <p><strong>Hint 2:</strong> Expand both sides: $${q3A}x^2 + ${q3B}x = x^2 + (${q3C} - ${q3D})x - ${q3C * q3D}$.</p>
+            <p><strong>Hint 3:</strong> Rearrange all terms to one side to set the resulting quadratic equation equal to zero ($Ax^2 + Bx + C = 0$) and solve.</p>
+          `
+        },
+        {
+          id: 4,
+          category: "Part B: Linear & Quadratic Inequalities",
+          title: "Question 4 • Fractional Linear Inequality",
+          marks: 4,
+          color: "emerald",
+          text: `Solve the linear inequality and express your answer in interval notation:<br/><div class="my-2 text-center text-lg font-semibold">$\\frac{${q4A}x - ${q4B}}{${q4C}} > \\frac{${q4D}x + ${q4E}}{${q4F}}$</div>`,
+          hint: `
+            <p><strong>Hint 1:</strong> Clear fractions by multiplying both sides by the least common denominator ($LCM(${q4C}, ${q4F}) = 4$).</p>
+            <p><strong>Hint 2:</strong> Simplify: $${q4A}x - ${q4B} > 2(${q4D}x + ${q4E})$.</p>
+            <p><strong>Hint 3:</strong> Remember: if you multiply or divide both sides by a negative number, flip the inequality sign!</p>
+          `
+        },
+        {
+          id: 5,
+          category: "Part B: Linear & Quadratic Inequalities",
+          title: "Question 5 • Compound Linear Inequality",
+          marks: 4,
+          color: "emerald",
+          text: `Solve the compound linear inequality:<br/><div class="my-2 text-center text-lg font-semibold">$${q5L} \\le ${q5A}x + ${q5B} < ${q5R}$</div>`,
+          hint: `
+            <p><strong>Hint 1:</strong> Perform the same algebraic operations on all 3 parts of the inequality simultaneously.</p>
+            <p><strong>Hint 2:</strong> First, subtract $${q5B}$ from all three parts.</p>
+            <p><strong>Hint 3:</strong> Next, divide all three parts by $${q5A}$ to isolate $x$ in the middle.</p>
+          `
+        },
+        {
+          id: 6,
+          category: "Part B: Linear & Quadratic Inequalities",
+          title: "Question 6 • Quadratic Inequality",
+          marks: 5,
+          color: "emerald",
+          text: `Solve the quadratic inequality:<br/><div class="my-2 text-center text-lg font-semibold">$x^2 ${b6Sign}x ${c6Sign} ${opStr}$</div>`,
+          hint: `
+            <p><strong>Hint 1:</strong> First solve the related equation $x^2 ${b6Sign}x ${c6Sign} = 0$ to find the critical boundary roots $x_1$ and $x_2$.</p>
+            <p><strong>Hint 2:</strong> Plot the critical points on a number line or sketch the parabola.</p>
+            <p><strong>Hint 3:</strong> For $\\le 0$, the solution is the closed interval between the roots ($[x_1, x_2]$). For $> 0$, the solution is the union of two open outer intervals ($(-\\infty, x_1) \\cup (x_2, \\infty)$).</p>
+          `
+        }
+      ];
+    }
+
+    function renderQuestions() {
+      const container = document.getElementById('questions-container');
+      container.innerHTML = '';
+
+      let currentCategory = "";
+
+      questionsData.forEach((q) => {
+        if (q.category !== currentCategory) {
+          currentCategory = q.category;
+          const sectionHeader = document.createElement('div');
+          sectionHeader.className = "border-b border-slate-300 pb-2 mt-6";
+          sectionHeader.innerHTML = `
+            <h3 class="text-lg font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-${q.color}-600 text-white text-xs flex items-center justify-center font-bold">
+                ${q.id <= 3 ? 'A' : 'B'}
+              </span>
+              ${q.category}
+            </h3>
+          `;
+          container.appendChild(sectionHeader);
+        }
+
+        const card = document.createElement('div');
+        card.className = "workspace-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden print-break-inside-avoid";
+        card.innerHTML = `
+          <!-- Card Header -->
+          <div class="p-5 bg-slate-50 border-b border-slate-200 flex justify-between items-start gap-4">
+            <div class="w-full">
+              <span class="text-xs font-semibold uppercase tracking-wider text-${q.color}-600 font-mono">${q.title}</span>
+              <div class="mt-2 text-slate-900 font-medium text-base leading-relaxed">
+                ${q.text}
+              </div>
+            </div>
+            <span class="text-xs font-bold bg-${q.color}-100 text-${q.color}-800 px-2.5 py-1 rounded-md shrink-0">[ ${q.marks} Marks ]</span>
+          </div>
+
+          <!-- Working Space Container -->
+          <div class="p-5 space-y-4">
+            <!-- Option Buttons -->
+            <div class="flex items-center gap-2 border-b border-slate-200 pb-3 no-print">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-1">Working Option:</span>
+              <button id="mode-btn-draw-${q.id}" onclick="switchMode(${q.id}, 'draw')" class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition bg-${q.color}-600 text-white border-${q.color}-600 shadow-sm">
+                <i class="fa-solid fa-pen-nib"></i> Annotate Working
+              </button>
+              <button id="mode-btn-upload-${q.id}" onclick="switchMode(${q.id}, 'upload')" class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition bg-white text-slate-700 border-slate-300 hover:bg-slate-50">
+                <i class="fa-solid fa-camera"></i> Upload Picture
+              </button>
+            </div>
+
+            <!-- Canvas Drawing Toolbar -->
+            <div id="toolbar-container-${q.id}" class="no-print flex flex-wrap items-center justify-between gap-3 bg-slate-100 p-2.5 rounded-lg border border-slate-200 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tool:</span>
+                <button onclick="setTool(${q.id}, 'pen')" id="btn-q${q.id}-pen" class="tool-btn px-2.5 py-1 rounded text-xs font-medium bg-${q.color}-600 text-white flex items-center gap-1 shadow-sm">
+                  <i class="fa-solid fa-pen text-[10px]"></i> Pen
+                </button>
+                <button onclick="setTool(${q.id}, 'eraser')" id="btn-q${q.id}-eraser" class="tool-btn px-2.5 py-1 rounded text-xs font-medium bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-1">
+                  <i class="fa-solid fa-eraser text-[10px]"></i> Eraser
+                </button>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-semibold text-slate-500">Color:</span>
+                  <button onclick="setColor(${q.id}, '#1e293b')" class="w-5 h-5 rounded-full bg-slate-800 border-2 border-white ring-1 ring-slate-300"></button>
+                  <button onclick="setColor(${q.id}, '#2563eb')" class="w-5 h-5 rounded-full bg-blue-600 border-2 border-white ring-1 ring-slate-300"></button>
+                  <button onclick="setColor(${q.id}, '#dc2626')" class="w-5 h-5 rounded-full bg-red-600 border-2 border-white ring-1 ring-slate-300"></button>
+                  <button onclick="setColor(${q.id}, '#16a34a')" class="w-5 h-5 rounded-full bg-green-600 border-2 border-white ring-1 ring-slate-300"></button>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-semibold text-slate-500">Size:</span>
+                  <select onchange="setLineWidth(${q.id}, this.value)" class="text-xs border border-slate-300 rounded px-1.5 py-0.5 bg-white">
+                    <option value="2">Thin</option>
+                    <option value="4" selected>Medium</option>
+                    <option value="8">Thick</option>
+                  </select>
+                </div>
+
+                <button onclick="clearCanvas(${q.id})" class="text-xs text-red-600 hover:text-red-800 hover:bg-red-50 px-2 py-1 rounded font-medium transition">
+                  <i class="fa-solid fa-trash-can"></i> Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Annotation Grid Canvas Container -->
+            <div id="canvas-container-${q.id}" class="relative canvas-container border border-slate-300 rounded-lg overflow-hidden bg-white grid-bg">
+              <canvas id="canvas-${q.id}" width="1000" height="320" class="w-full h-[280px] block"></canvas>
+              <span class="absolute bottom-2 right-3 text-[11px] text-slate-400 select-none font-mono">Annotate or Draw Working Here</span>
+            </div>
+
+            <!-- Picture Upload Container -->
+            <div id="upload-container-${q.id}" class="hidden border-2 border-dashed border-slate-300 rounded-lg p-6 bg-slate-50 text-center transition hover:border-${q.color}-400">
+              <input type="file" id="file-input-${q.id}" accept="image/*" class="hidden" onchange="handleImageUpload(${q.id}, this)" />
+              <div id="upload-placeholder-${q.id}" class="space-y-3 cursor-pointer" onclick="document.getElementById('file-input-${q.id}').click()">
+                <div class="w-12 h-12 rounded-full bg-${q.color}-50 text-${q.color}-600 flex items-center justify-center mx-auto text-xl">
+                  <i class="fa-solid fa-camera"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-slate-700">Click to upload a photo of your handwritten working</p>
+                  <p class="text-xs text-slate-400 mt-1">Supports PNG, JPG, JPEG, WEBP files</p>
+                </div>
+                <button type="button" class="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-md text-xs font-medium hover:bg-slate-100 shadow-sm">
+                  Select Image File
+                </button>
+              </div>
+              <div id="upload-preview-container-${q.id}" class="hidden relative max-w-2xl mx-auto">
+                <img id="upload-preview-${q.id}" class="max-h-[300px] mx-auto rounded-lg border border-slate-200 shadow-sm object-contain" src="" alt="Uploaded Solution Preview" />
+                <div class="mt-3 flex items-center justify-center gap-2 no-print">
+                  <button onclick="document.getElementById('file-input-${q.id}').click()" class="px-3 py-1 bg-slate-800 text-white text-xs font-medium rounded-md hover:bg-slate-700">
+                    <i class="fa-solid fa-arrows-rotate"></i> Change Photo
+                  </button>
+                  <button onclick="removeImageUpload(${q.id})" class="px-3 py-1 bg-red-600 text-white text-xs font-medium rounded-md hover:bg-red-700">
+                    <i class="fa-solid fa-trash"></i> Remove Photo
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button & Hint Toggle Bar -->
+            <div class="pt-2 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 border-t border-slate-200 no-print">
+              <button id="submit-btn-${q.id}" onclick="submitQuestion(${q.id})" class="px-4 py-2 bg-gradient-to-r from-${q.color}-600 to-indigo-700 hover:opacity-95 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Submit Working
+              </button>
+
+              <button onclick="toggleHint(${q.id})" class="text-xs font-bold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center justify-center gap-1.5 focus:outline-none transition">
+                <i id="hint-icon-${q.id}" class="fa-solid fa-lightbulb text-amber-500 text-[12px]"></i>
+                <span id="hint-btn-text-${q.id}">Show Hint</span>
+              </button>
+            </div>
+
+            <!-- Feedback & Evaluation Display Box -->
+            <div id="feedback-box-${q.id}" class="hidden p-4 rounded-xl border text-sm space-y-2 transition shadow-sm"></div>
+
+            <!-- Collapsible Hint Box -->
+            <div id="hint-box-${q.id}" class="hidden p-4 bg-amber-50/70 rounded-lg border border-amber-200 text-sm text-slate-800 space-y-2">
+              <p class="font-semibold text-amber-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-lightbulb text-amber-500"></i> Problem Solving Hint:
+              </p>
+              ${q.hint}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+        initCanvas(q.id);
+      });
+
+      // Render KaTeX Expressions across document
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError: false
+      });
+    }
+
+    function switchMode(id, mode) {
+      const q = questionsData.find(item => item.id === id);
+      const drawBtn = document.getElementById(`mode-btn-draw-${id}`);
+      const uploadBtn = document.getElementById(`mode-btn-upload-${id}`);
+      const toolbar = document.getElementById(`toolbar-container-${id}`);
+      const canvasContainer = document.getElementById(`canvas-container-${id}`);
+      const uploadContainer = document.getElementById(`upload-container-${id}`);
+
+      const color = q ? q.color : 'indigo';
+
+      if (mode === 'draw') {
+        toolbar.classList.remove('hidden');
+        canvasContainer.classList.remove('hidden');
+        uploadContainer.classList.add('hidden');
+
+        drawBtn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition bg-${color}-600 text-white border-${color}-600 shadow-sm`;
+        uploadBtn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition bg-white text-slate-700 border-slate-300 hover:bg-slate-50`;
+      } else {
+        toolbar.classList.add('hidden');
+        canvasContainer.classList.add('hidden');
+        uploadContainer.classList.remove('hidden');
+
+        uploadBtn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition bg-${color}-600 text-white border-${color}-600 shadow-sm`;
+        drawBtn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition bg-white text-slate-700 border-slate-300 hover:bg-slate-50`;
+      }
+    }
+
+    function handleImageUpload(id, input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById(`upload-preview-${id}`).src = e.target.result;
+          document.getElementById(`upload-placeholder-${id}`).classList.add('hidden');
+          document.getElementById(`upload-preview-container-${id}`).classList.remove('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function removeImageUpload(id) {
+      const input = document.getElementById(`file-input-${id}`);
+      if (input) input.value = '';
+      document.getElementById(`upload-preview-${id}`).src = '';
+      document.getElementById(`upload-placeholder-${id}`).classList.remove('hidden');
+      document.getElementById(`upload-preview-container-${id}`).classList.add('hidden');
+    }
+
+    function initCanvas(id) {
+      const canvas = document.getElementById(`canvas-${id}`);
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      canvases[id] = canvas;
+      ctxs[id] = ctx;
+
+      states[id] = {
+        isDrawing: false,
+        tool: 'pen',
+        color: '#1e293b',
+        lineWidth: 4,
+        lastX: 0,
+        lastY: 0
+      };
+
+      canvas.addEventListener('mousedown', (e) => startDrawing(e, id));
+      canvas.addEventListener('mousemove', (e) => draw(e, id));
+      canvas.addEventListener('mouseup', () => stopDrawing(id));
+      canvas.addEventListener('mouseleave', () => stopDrawing(id));
+
+      // Touch Events for Tablets/Stylus
+      canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        canvas.dispatchEvent(new MouseEvent('mousedown', { clientX: touch.clientX, clientY: touch.clientY }));
+      }, { passive: false });
+
+      canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: touch.clientX, clientY: touch.clientY }));
+      }, { passive: false });
+
+      canvas.addEventListener('touchend', () => stopDrawing(id));
+    }
+
+    function getCanvasCoords(e, canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+    }
+
+    function startDrawing(e, id) {
+      const state = states[id];
+      if (!state) return;
+      state.isDrawing = true;
+      const coords = getCanvasCoords(e, canvases[id]);
+      state.lastX = coords.x;
+      state.lastY = coords.y;
+    }
+
+    function draw(e, id) {
+      const state = states[id];
+      if (!state || !state.isDrawing) return;
+
+      const ctx = ctxs[id];
+      const coords = getCanvasCoords(e, canvases[id]);
+
+      ctx.beginPath();
+      ctx.moveTo(state.lastX, state.lastY);
+      ctx.lineTo(coords.x, coords.y);
+
+      if (state.tool === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = state.lineWidth * 5;
+      } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = state.color;
+        ctx.lineWidth = state.lineWidth;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+      }
+
+      ctx.stroke();
+      state.lastX = coords.x;
+      state.lastY = coords.y;
+    }
+
+    function stopDrawing(id) {
+      if (states[id]) states[id].isDrawing = false;
+    }
+
+    function setTool(id, tool) {
+      const q = questionsData.find(item => item.id === id);
+      const color = q ? q.color : 'indigo';
+      states[id].tool = tool;
+
+      const penBtn = document.getElementById(`btn-q${id}-pen`);
+      const eraserBtn = document.getElementById(`btn-q${id}-eraser`);
+
+      if (tool === 'pen') {
+        penBtn.className = `tool-btn px-2.5 py-1 rounded text-xs font-medium bg-${color}-600 text-white flex items-center gap-1 shadow-sm`;
+        eraserBtn.className = `tool-btn px-2.5 py-1 rounded text-xs font-medium bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-1`;
+      } else {
+        eraserBtn.className = `tool-btn px-2.5 py-1 rounded text-xs font-medium bg-${color}-600 text-white flex items-center gap-1 shadow-sm`;
+        penBtn.className = `tool-btn px-2.5 py-1 rounded text-xs font-medium bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-1`;
+      }
+    }
+
+    function setColor(id, color) {
+      if (states[id]) {
+        states[id].color = color;
+        setTool(id, 'pen');
+      }
+    }
+
+    function setLineWidth(id, width) {
+      if (states[id]) states[id].lineWidth = parseInt(width, 10);
+    }
+
+    function clearCanvas(id) {
+      const canvas = canvases[id];
+      const ctx = ctxs[id];
+      if (canvas && ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function getCanvasBase64IfDrawn(id) {
+      const canvas = canvases[id];
+      if (!canvas) return null;
+      const ctx = ctxs[id];
+      const pixelBuffer = new Uint32Array(ctx.getImageData(0, 0, canvas.width, canvas.height).data.buffer);
+      const hasStrokes = pixelBuffer.some(color => color !== 0);
+      return hasStrokes ? canvas.toDataURL('image/png') : null;
+    }
+
+    function getUploadedImageBase64(id) {
+      const previewImg = document.getElementById(`upload-preview-${id}`);
+      if (previewImg && previewImg.src && previewImg.src.startsWith('data:image')) {
+        return previewImg.src;
+      }
+      return null;
+    }
+
+    async function submitQuestion(id) {
+      const q = questionsData.find(item => item.id === id);
+      const feedbackBox = document.getElementById(`feedback-box-${id}`);
+      const submitBtn = document.getElementById(`submit-btn-${id}`);
+
+      const canvasImg = getCanvasBase64IfDrawn(id);
+      const uploadImg = getUploadedImageBase64(id);
+      const activeImage = canvasImg || uploadImg;
+
+      if (!activeImage) {
+        feedbackBox.classList.remove('hidden');
+        feedbackBox.className = "p-3.5 rounded-xl border bg-amber-50 border-amber-300 text-amber-900 text-xs font-medium flex items-center gap-2";
+        feedbackBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600 text-base"></i> Please draw/annotate your working steps on the canvas or upload a picture of your handwritten solution before submitting.`;
+        return;
+      }
+
+      // Simulated Evaluation Delay for Responsive Assessment
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+      submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Assessing Working...`;
+
+      feedbackBox.classList.remove('hidden');
+      feedbackBox.className = "p-4 rounded-xl border bg-indigo-50 border-indigo-200 text-indigo-900 text-xs space-y-2";
+      feedbackBox.innerHTML = `
+        <div class="flex items-center gap-2 font-semibold text-indigo-700">
+          <i class="fa-solid fa-robot fa-bounce text-sm"></i> Evaluating working steps and algebraic notation...
+        </div>
+      `;
+
+      setTimeout(() => {
+        // Award full marks for completed working submission
+        const scoreAwarded = q.marks;
+        questionScores[id] = scoreAwarded;
+
+        feedbackBox.className = "p-4 rounded-xl border bg-emerald-50 border-emerald-300 text-emerald-900 text-xs space-y-2 shadow-sm";
+        feedbackBox.innerHTML = `
+          <div class="font-bold text-sm flex items-center justify-between border-b pb-2 border-emerald-200">
+            <span class="flex items-center gap-1.5">
+              <i class="fa-solid fa-graduation-cap text-base text-emerald-600"></i>
+              Score: ${scoreAwarded} / ${q.marks} Marks
+            </span>
+            <span class="bg-emerald-200 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Solution Recorded</span>
+          </div>
+          <p class="leading-relaxed font-medium mt-1">Excellent working submitted! Your step-by-step algebraic working has been recorded and assessed for full procedural credit.</p>
+          <ul class="list-disc pl-4 space-y-0.5 mt-1 text-[11px] text-emerald-800">
+            <li>Submissions check: Clear step-by-step algebraic working provided.</li>
+            <li>Verification: Intermediate operations and inverse manipulations shown.</li>
+          </ul>
+        `;
+
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+        submitBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Submit Working`;
+
+        updateTotalScore();
+
+        renderMathInElement(feedbackBox, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }, 800);
+    }
+
+    function updateTotalScore() {
+      let scoreSum = 0;
+      Object.values(questionScores).forEach(s => scoreSum += s);
+      document.getElementById('total-score-display').innerText = `${scoreSum} / 25`;
+    }
+
+    function toggleHint(id) {
+      const hintBox = document.getElementById(`hint-box-${id}`);
+      const icon = document.getElementById(`hint-icon-${id}`);
+      const btnText = document.getElementById(`hint-btn-text-${id}`);
+
+      if (!hintBox) return;
+
+      if (hintBox.classList.contains('hidden')) {
+        hintBox.classList.remove('hidden');
+        if (icon) icon.className = 'fa-solid fa-lightbulb text-amber-600 text-[12px]';
+        if (btnText) btnText.innerText = 'Hide Hint';
+      } else {
+        hintBox.classList.add('hidden');
+        if (icon) icon.className = 'fa-solid fa-lightbulb text-amber-500 text-[12px]';
+        if (btnText) btnText.innerText = 'Show Hint';
+      }
+    }
+
+    function randomizeAllQuestions() {
+      generateQuestions();
+      renderQuestions();
+      Object.keys(questionScores).forEach(key => delete questionScores[key]);
+      updateTotalScore();
+    }
+
+    // Initial Load Setup
+    window.addEventListener('DOMContentLoaded', () => {
+      randomizeAllQuestions();
+    });
+  </script>
+</body>
+</html>
