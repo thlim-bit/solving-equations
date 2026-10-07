@@ -43,7 +43,7 @@
         </div>
         <div>
           <h1 class="text-xl font-bold tracking-tight">Math Workspace: Equations & Inequalities</h1>
-          <p class="text-xs text-slate-400">Algebraic Solutions & Step-by-Step Working Space</p>
+          <p class="text-xs text-slate-400">AI-Powered Algebraic Evaluation Space</p>
         </div>
       </div>
 
@@ -69,9 +69,9 @@
   <div class="max-w-6xl mx-auto px-4 mt-6">
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
-        <span class="inline-block px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-700 bg-indigo-50 rounded-full mb-2">Student Practice Worksheet</span>
+        <span class="inline-block px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-700 bg-indigo-50 rounded-full mb-2">AI-Evaluated Practice Worksheet</span>
         <h2 class="text-2xl font-bold text-slate-900">Equations & Inequalities Workspace</h2>
-        <p class="text-slate-600 text-sm mt-1">Annotate your working directly on the grid canvas or upload a photo of your handwritten work.</p>
+        <p class="text-slate-600 text-sm mt-1">Annotate your working directly on the canvas or upload a photo. The AI will strict-grade your steps.</p>
       </div>
       <div class="hidden print:block text-right text-xs text-slate-700 space-y-1">
         <p class="font-bold text-sm text-slate-900">Student: ______________________</p>
@@ -97,21 +97,16 @@
     }
 
     function generateQuestions() {
-      // Q1: Rational Equation (3 Marks) [e.g., (5x - 1)/(3x - 2) = 3]
+      // Q1: Rational Equation
       const q1A = randInt(4, 7);
       const q1B = randInt(1, 5);
       const q1C = randInt(2, 4);
       const q1D = randInt(1, 4);
       const q1E = randInt(2, 4);
-      // Equation: (Ax - B)/(Cx - D) = E => Ax - B = E(Cx - D) => Ax - B = ECx - ED => (EC - A)x = ED - B => x = (ED - B)/(EC - A)
-      const q1Numerator = (q1E * q1D) - q1B;
-      const q1Denominator = (q1E * q1C) - q1A;
-      const q1AnsStr = q1Denominator !== 0 ? (q1Numerator / q1Denominator).toFixed(2) : "Undefined";
 
-      // Q2: Quadratic Equation with Decimals or Standard (4 Marks) [e.g., 0.01x^2 + 0.2x - 3.51 = 0 or x^2 - 7x + 10 = 0]
+      // Q2: Quadratic Equation
       const useDecimals = Math.random() > 0.5;
       let q2Text = "";
-      let q2Ans1 = 0, q2Ans2 = 0;
       if (useDecimals) {
         const r1 = randInt(-15, -1) * 0.1;
         const r2 = randInt(1, 15) * 0.1;
@@ -120,8 +115,6 @@
         const bSign = bCoeff >= 0 ? `+ ${bCoeff}` : `- ${Math.abs(bCoeff)}`;
         const cSign = cCoeff >= 0 ? `+ ${cCoeff}` : `- ${Math.abs(cCoeff)}`;
         q2Text = `Solve the quadratic equation with decimals:<br/><div class="my-2 text-center text-lg font-semibold">$0.01x^2 ${bSign}x ${cSign} = 0$</div>`;
-        q2Ans1 = r1;
-        q2Ans2 = r2;
       } else {
         const r1 = randInt(-8, 8);
         let r2 = randInt(-8, 8);
@@ -131,19 +124,15 @@
         const bSign = bCoeff >= 0 ? `+ ${bCoeff}` : `- ${Math.abs(bCoeff)}`;
         const cSign = cCoeff >= 0 ? `+ ${cCoeff}` : `- ${Math.abs(cCoeff)}`;
         q2Text = `Solve the quadratic equation by factoring or using the quadratic formula:<br/><div class="my-2 text-center text-lg font-semibold">$x^2 ${bSign}x ${cSign} = 0$</div>`;
-        q2Ans1 = r1;
-        q2Ans2 = r2;
       }
 
-      // Q3: Algebraic Fraction Equation (5 Marks) [e.g., (2x+3)/(x+1) = (x-1)/x]
+      // Q3: Algebraic Fraction Equation
       const q3A = randInt(2, 4);
       const q3B = randInt(1, 5);
       const q3C = randInt(1, 3);
       const q3D = randInt(1, 4);
-      // (Ax + B) / (x + C) = (x - D) / x  => x(Ax + B) = (x + C)(x - D)
-      // Ax^2 + Bx = x^2 + (C - D)x - CD => (A - 1)x^2 + (B - C + D)x + CD = 0
 
-      // Q4: Fractional Linear Inequality (4 Marks) [e.g., (3x - 1)/4 > (x + 5)/2]
+      // Q4: Fractional Linear Inequality
       const q4A = randInt(3, 6);
       const q4B = randInt(1, 5);
       const q4C = 4;
@@ -151,13 +140,13 @@
       const q4E = randInt(2, 6);
       const q4F = 2;
 
-      // Q5: Compound Linear Inequality (4 Marks) [e.g., -5 <= 2x + 3 < 11]
+      // Q5: Compound Linear Inequality
       const q5L = randInt(-8, -3);
       const q5A = randInt(2, 4);
       const q5B = randInt(1, 5);
       const q5R = randInt(7, 15);
 
-      // Q6: Quadratic Inequality (5 Marks) [e.g., x^2 - 5x - 14 <= 0 or x^2 - 2x - 15 > 0]
+      // Q6: Quadratic Inequality
       const rA = randInt(-5, -2);
       const rB = randInt(3, 7);
       const q6B = -(rA + rB);
@@ -169,82 +158,34 @@
 
       questionsData = [
         {
-          id: 1,
-          category: "Part A: Algebraic Equations",
-          title: "Question 1 • Rational Equation",
-          marks: 3,
-          color: "indigo",
+          id: 1, category: "Part A: Algebraic Equations", title: "Question 1 • Rational Equation", marks: 3, color: "indigo",
           text: `Solve the rational algebraic equation:<br/><div class="my-2 text-center text-lg font-semibold">$\\frac{${q1A}x - ${q1B}}{${q1C}x - ${q1D}} = ${q1E}$</div>`,
-          hint: `
-            <p><strong>Hint 1:</strong> Multiply both sides by the denominator $(${q1C}x - ${q1D})$ to clear the fraction.</p>
-            <p><strong>Hint 2:</strong> Expand the right-hand side: $${q1A}x - ${q1B} = ${q1E}(${q1C}x - ${q1D})$.</p>
-            <p><strong>Hint 3:</strong> Collect all $x$ terms on one side and constant terms on the other to solve for $x$.</p>
-          `
+          hint: `<p><strong>Hint 1:</strong> Multiply both sides by the denominator $(${q1C}x - ${q1D})$ to clear the fraction.</p><p><strong>Hint 2:</strong> Expand the right-hand side.</p><p><strong>Hint 3:</strong> Collect all $x$ terms on one side.</p>`
         },
         {
-          id: 2,
-          category: "Part A: Algebraic Equations",
-          title: "Question 2 • Quadratic Equation",
-          marks: 4,
-          color: "indigo",
+          id: 2, category: "Part A: Algebraic Equations", title: "Question 2 • Quadratic Equation", marks: 4, color: "indigo",
           text: q2Text,
-          hint: `
-            <p><strong>Hint 1:</strong> Identify coefficients $a, b, c$ for $a x^2 + b x + c = 0$.</p>
-            <p><strong>Hint 2:</strong> You can use factoring or the quadratic formula: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$.</p>
-            <p><strong>Hint 3:</strong> Make sure to state both values of $x$.</p>
-          `
+          hint: `<p><strong>Hint 1:</strong> Identify coefficients $a, b, c$ for $a x^2 + b x + c = 0$.</p><p><strong>Hint 2:</strong> You can use factoring or the quadratic formula: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$.</p>`
         },
         {
-          id: 3,
-          category: "Part A: Algebraic Equations",
-          title: "Question 3 • Algebraic Fraction Equation",
-          marks: 5,
-          color: "indigo",
+          id: 3, category: "Part A: Algebraic Equations", title: "Question 3 • Algebraic Fraction Equation", marks: 5, color: "indigo",
           text: `Solve the algebraic fraction equation by cross-multiplication:<br/><div class="my-2 text-center text-lg font-semibold">$\\frac{${q3A}x + ${q3B}}{x + ${q3C}} = \\frac{x - ${q3D}}{x}$</div>`,
-          hint: `
-            <p><strong>Hint 1:</strong> Cross-multiply to eliminate denominators: $x(${q3A}x + ${q3B}) = (x + ${q3C})(x - ${q3D})$.</p>
-            <p><strong>Hint 2:</strong> Expand both sides: $${q3A}x^2 + ${q3B}x = x^2 + (${q3C} - ${q3D})x - ${q3C * q3D}$.</p>
-            <p><strong>Hint 3:</strong> Rearrange all terms to one side to set the resulting quadratic equation equal to zero ($Ax^2 + Bx + C = 0$) and solve.</p>
-          `
+          hint: `<p><strong>Hint 1:</strong> Cross-multiply to eliminate denominators: $x(${q3A}x + ${q3B}) = (x + ${q3C})(x - ${q3D})$.</p><p><strong>Hint 2:</strong> Expand both sides and simplify to a quadratic equal to zero.</p>`
         },
         {
-          id: 4,
-          category: "Part B: Linear & Quadratic Inequalities",
-          title: "Question 4 • Fractional Linear Inequality",
-          marks: 4,
-          color: "emerald",
+          id: 4, category: "Part B: Linear & Quadratic Inequalities", title: "Question 4 • Fractional Linear Inequality", marks: 4, color: "emerald",
           text: `Solve the linear inequality and express your answer in interval notation:<br/><div class="my-2 text-center text-lg font-semibold">$\\frac{${q4A}x - ${q4B}}{${q4C}} > \\frac{${q4D}x + ${q4E}}{${q4F}}$</div>`,
-          hint: `
-            <p><strong>Hint 1:</strong> Clear fractions by multiplying both sides by the least common denominator ($LCM(${q4C}, ${q4F}) = 4$).</p>
-            <p><strong>Hint 2:</strong> Simplify: $${q4A}x - ${q4B} > 2(${q4D}x + ${q4E})$.</p>
-            <p><strong>Hint 3:</strong> Remember: if you multiply or divide both sides by a negative number, flip the inequality sign!</p>
-          `
+          hint: `<p><strong>Hint 1:</strong> Clear fractions by multiplying both sides by the least common denominator ($LCM(${q4C}, ${q4F}) = 4$).</p><p><strong>Hint 2:</strong> Remember: if you multiply/divide by a negative number, flip the sign!</p>`
         },
         {
-          id: 5,
-          category: "Part B: Linear & Quadratic Inequalities",
-          title: "Question 5 • Compound Linear Inequality",
-          marks: 4,
-          color: "emerald",
+          id: 5, category: "Part B: Linear & Quadratic Inequalities", title: "Question 5 • Compound Linear Inequality", marks: 4, color: "emerald",
           text: `Solve the compound linear inequality:<br/><div class="my-2 text-center text-lg font-semibold">$${q5L} \\le ${q5A}x + ${q5B} < ${q5R}$</div>`,
-          hint: `
-            <p><strong>Hint 1:</strong> Perform the same algebraic operations on all 3 parts of the inequality simultaneously.</p>
-            <p><strong>Hint 2:</strong> First, subtract $${q5B}$ from all three parts.</p>
-            <p><strong>Hint 3:</strong> Next, divide all three parts by $${q5A}$ to isolate $x$ in the middle.</p>
-          `
+          hint: `<p><strong>Hint 1:</strong> Perform the same algebraic operations on all 3 parts of the inequality simultaneously.</p><p><strong>Hint 2:</strong> First, subtract $${q5B}$ from all three parts.</p>`
         },
         {
-          id: 6,
-          category: "Part B: Linear & Quadratic Inequalities",
-          title: "Question 6 • Quadratic Inequality",
-          marks: 5,
-          color: "emerald",
+          id: 6, category: "Part B: Linear & Quadratic Inequalities", title: "Question 6 • Quadratic Inequality", marks: 5, color: "emerald",
           text: `Solve the quadratic inequality:<br/><div class="my-2 text-center text-lg font-semibold">$x^2 ${b6Sign}x ${c6Sign} ${opStr}$</div>`,
-          hint: `
-            <p><strong>Hint 1:</strong> First solve the related equation $x^2 ${b6Sign}x ${c6Sign} = 0$ to find the critical boundary roots $x_1$ and $x_2$.</p>
-            <p><strong>Hint 2:</strong> Plot the critical points on a number line or sketch the parabola.</p>
-            <p><strong>Hint 3:</strong> For $\\le 0$, the solution is the closed interval between the roots ($[x_1, x_2]$). For $> 0$, the solution is the union of two open outer intervals ($(-\\infty, x_1) \\cup (x_2, \\infty)$).</p>
-          `
+          hint: `<p><strong>Hint 1:</strong> First solve the related equation $x^2 ${b6Sign}x ${c6Sign} = 0$ to find the critical boundaries.</p><p><strong>Hint 2:</strong> Test points on a number line or sketch the parabola to find the valid intervals.</p>`
         }
       ];
     }
@@ -252,7 +193,6 @@
     function renderQuestions() {
       const container = document.getElementById('questions-container');
       container.innerHTML = '';
-
       let currentCategory = "";
 
       questionsData.forEach((q) => {
@@ -274,20 +214,17 @@
         const card = document.createElement('div');
         card.className = "workspace-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden print-break-inside-avoid";
         card.innerHTML = `
-          <!-- Card Header -->
           <div class="p-5 bg-slate-50 border-b border-slate-200 flex justify-between items-start gap-4">
             <div class="w-full">
               <span class="text-xs font-semibold uppercase tracking-wider text-${q.color}-600 font-mono">${q.title}</span>
-              <div class="mt-2 text-slate-900 font-medium text-base leading-relaxed">
+              <div class="mt-2 text-slate-900 font-medium text-base leading-relaxed" id="question-text-${q.id}">
                 ${q.text}
               </div>
             </div>
             <span class="text-xs font-bold bg-${q.color}-100 text-${q.color}-800 px-2.5 py-1 rounded-md shrink-0">[ ${q.marks} Marks ]</span>
           </div>
 
-          <!-- Working Space Container -->
           <div class="p-5 space-y-4">
-            <!-- Option Buttons -->
             <div class="flex items-center gap-2 border-b border-slate-200 pb-3 no-print">
               <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-1">Working Option:</span>
               <button id="mode-btn-draw-${q.id}" onclick="switchMode(${q.id}, 'draw')" class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition bg-${q.color}-600 text-white border-${q.color}-600 shadow-sm">
@@ -298,7 +235,6 @@
               </button>
             </div>
 
-            <!-- Canvas Drawing Toolbar -->
             <div id="toolbar-container-${q.id}" class="no-print flex flex-wrap items-center justify-between gap-3 bg-slate-100 p-2.5 rounded-lg border border-slate-200 text-sm">
               <div class="flex items-center gap-2">
                 <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tool:</span>
@@ -334,13 +270,11 @@
               </div>
             </div>
 
-            <!-- Annotation Grid Canvas Container -->
             <div id="canvas-container-${q.id}" class="relative canvas-container border border-slate-300 rounded-lg overflow-hidden bg-white grid-bg">
               <canvas id="canvas-${q.id}" width="1000" height="320" class="w-full h-[280px] block"></canvas>
               <span class="absolute bottom-2 right-3 text-[11px] text-slate-400 select-none font-mono">Annotate or Draw Working Here</span>
             </div>
 
-            <!-- Picture Upload Container -->
             <div id="upload-container-${q.id}" class="hidden border-2 border-dashed border-slate-300 rounded-lg p-6 bg-slate-50 text-center transition hover:border-${q.color}-400">
               <input type="file" id="file-input-${q.id}" accept="image/*" class="hidden" onchange="handleImageUpload(${q.id}, this)" />
               <div id="upload-placeholder-${q.id}" class="space-y-3 cursor-pointer" onclick="document.getElementById('file-input-${q.id}').click()">
@@ -349,7 +283,7 @@
                 </div>
                 <div>
                   <p class="text-sm font-semibold text-slate-700">Click to upload a photo of your handwritten working</p>
-                  <p class="text-xs text-slate-400 mt-1">Supports PNG, JPG, JPEG, WEBP files</p>
+                  <p class="text-xs text-slate-400 mt-1">Supports PNG, JPG, JPEG files</p>
                 </div>
                 <button type="button" class="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-md text-xs font-medium hover:bg-slate-100 shadow-sm">
                   Select Image File
@@ -368,10 +302,9 @@
               </div>
             </div>
 
-            <!-- Submit Button & Hint Toggle Bar -->
             <div class="pt-2 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 border-t border-slate-200 no-print">
               <button id="submit-btn-${q.id}" onclick="submitQuestion(${q.id})" class="px-4 py-2 bg-gradient-to-r from-${q.color}-600 to-indigo-700 hover:opacity-95 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Submit Working
+                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Grade Working
               </button>
 
               <button onclick="toggleHint(${q.id})" class="text-xs font-bold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center justify-center gap-1.5 focus:outline-none transition">
@@ -380,10 +313,8 @@
               </button>
             </div>
 
-            <!-- Feedback & Evaluation Display Box -->
             <div id="feedback-box-${q.id}" class="hidden p-4 rounded-xl border text-sm space-y-2 transition shadow-sm"></div>
 
-            <!-- Collapsible Hint Box -->
             <div id="hint-box-${q.id}" class="hidden p-4 bg-amber-50/70 rounded-lg border border-amber-200 text-sm text-slate-800 space-y-2">
               <p class="font-semibold text-amber-900 flex items-center gap-1.5">
                 <i class="fa-solid fa-lightbulb text-amber-500"></i> Problem Solving Hint:
@@ -396,7 +327,6 @@
         initCanvas(q.id);
       });
 
-      // Render KaTeX Expressions across document
       renderMathInElement(document.body, {
         delimiters: [
           {left: '$$', right: '$$', display: true},
@@ -413,21 +343,18 @@
       const toolbar = document.getElementById(`toolbar-container-${id}`);
       const canvasContainer = document.getElementById(`canvas-container-${id}`);
       const uploadContainer = document.getElementById(`upload-container-${id}`);
-
       const color = q ? q.color : 'indigo';
 
       if (mode === 'draw') {
         toolbar.classList.remove('hidden');
         canvasContainer.classList.remove('hidden');
         uploadContainer.classList.add('hidden');
-
         drawBtn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition bg-${color}-600 text-white border-${color}-600 shadow-sm`;
         uploadBtn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition bg-white text-slate-700 border-slate-300 hover:bg-slate-50`;
       } else {
         toolbar.classList.add('hidden');
         canvasContainer.classList.add('hidden');
         uploadContainer.classList.remove('hidden');
-
         uploadBtn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition bg-${color}-600 text-white border-${color}-600 shadow-sm`;
         drawBtn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition bg-white text-slate-700 border-slate-300 hover:bg-slate-50`;
       }
@@ -461,21 +388,13 @@
       canvases[id] = canvas;
       ctxs[id] = ctx;
 
-      states[id] = {
-        isDrawing: false,
-        tool: 'pen',
-        color: '#1e293b',
-        lineWidth: 4,
-        lastX: 0,
-        lastY: 0
-      };
+      states[id] = { isDrawing: false, tool: 'pen', color: '#1e293b', lineWidth: 4, lastX: 0, lastY: 0 };
 
       canvas.addEventListener('mousedown', (e) => startDrawing(e, id));
       canvas.addEventListener('mousemove', (e) => draw(e, id));
       canvas.addEventListener('mouseup', () => stopDrawing(id));
       canvas.addEventListener('mouseleave', () => stopDrawing(id));
 
-      // Touch Events for Tablets/Stylus
       canvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         const touch = e.touches[0];
@@ -528,7 +447,6 @@
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
       }
-
       ctx.stroke();
       state.lastX = coords.x;
       state.lastY = coords.y;
@@ -578,7 +496,19 @@
       const ctx = ctxs[id];
       const pixelBuffer = new Uint32Array(ctx.getImageData(0, 0, canvas.width, canvas.height).data.buffer);
       const hasStrokes = pixelBuffer.some(color => color !== 0);
-      return hasStrokes ? canvas.toDataURL('image/png') : null;
+      
+      if (!hasStrokes) return null;
+
+      // Draw onto a temporary canvas with a white background so LLM can read dark strokes clearly
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.fillStyle = '#ffffff';
+      tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+      tempCtx.drawImage(canvas, 0, 0);
+
+      return tempCanvas.toDataURL('image/jpeg', 0.9);
     }
 
     function getUploadedImageBase64(id) {
@@ -605,43 +535,140 @@
         return;
       }
 
-      // Simulated Evaluation Delay for Responsive Assessment
+      // Set Loading UI
       submitBtn.disabled = true;
       submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
-      submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Assessing Working...`;
+      submitBtn.innerHTML = `<i class="fa-solid fa-robot fa-spin"></i> Grading Working...`;
 
       feedbackBox.classList.remove('hidden');
       feedbackBox.className = "p-4 rounded-xl border bg-indigo-50 border-indigo-200 text-indigo-900 text-xs space-y-2";
       feedbackBox.innerHTML = `
         <div class="flex items-center gap-2 font-semibold text-indigo-700">
-          <i class="fa-solid fa-robot fa-bounce text-sm"></i> Evaluating working steps and algebraic notation...
+          <i class="fa-solid fa-magnifying-glass fa-beat-fade text-sm"></i> The AI teacher is strictly evaluating your logic, operations, and final answers...
         </div>
       `;
 
-      setTimeout(() => {
-        // Award full marks for completed working submission
-        const scoreAwarded = q.marks;
-        questionScores[id] = scoreAwarded;
+      try {
+        const base64Data = activeImage.split(',')[1];
+        const mimeMatch = activeImage.match(/data:(.*?);base64/);
+        const mimeType = mimeMatch ? mimeMatch[1] : "image/jpeg";
+        
+        // Strip out HTML tags for a clean prompt
+        const rawQuestionHTML = document.getElementById(`question-text-${id}`).innerHTML;
+        const cleanQuestionText = rawQuestionHTML.replace(/<[^>]*>?/gm, ' ').trim();
 
-        feedbackBox.className = "p-4 rounded-xl border bg-emerald-50 border-emerald-300 text-emerald-900 text-xs space-y-2 shadow-sm";
+        const prompt = `You are an expert, strict mathematics teacher evaluating a student's handwritten/drawn workspace. 
+        
+Question Context: ${cleanQuestionText}
+Total Available Marks: ${q.marks}
+
+Instructions for Grading:
+1. Carefully analyze the uploaded image of the student's working.
+2. Check if the algebraic steps shown logically progress toward the correct solution.
+3. Verify if the final mathematical answer is correct based on the question constraints.
+4. IMPORTANT: If the image contains scribbles, unrelated drawings, missing calculations, or simply no actual math, you MUST award exactly 0 marks.
+5. If the logic is partially correct but contains an error midway, award partial marks.
+6. Provide a concise explanation of your deduction or praise their working.
+7. Use KaTeX format (e.g., $x=5$) when writing math equations in your feedback.
+
+Respond ONLY with a JSON object exactly matching this format:
+{
+  "score": <integer from 0 to ${q.marks}>,
+  "feedback": "<string explanation>"
+}`;
+
+        const payload = {
+          contents: [{
+            role: "user",
+            parts: [
+              { text: prompt },
+              { inlineData: { mimeType: mimeType, data: base64Data } }
+            ]
+          }],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "OBJECT",
+              properties: {
+                "score": { type: "INTEGER" },
+                "feedback": { type: "STRING" }
+              },
+              required: ["score", "feedback"]
+            }
+          }
+        };
+
+        const apiKey = ""; 
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+        // Exponential backoff logic for reliability
+        let result;
+        let retries = 3;
+        let delay = 1000;
+        
+        while (retries > 0) {
+          try {
+            const response = await fetch(apiUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            result = await response.json();
+            break; 
+          } catch (e) {
+            retries--;
+            if (retries === 0) throw e;
+            await new Promise(r => setTimeout(r, delay));
+            delay *= 2;
+          }
+        }
+
+        if (!result?.candidates?.[0]?.content?.parts?.[0]?.text) {
+             throw new Error("Invalid response from API");
+        }
+
+        const jsonStr = result.candidates[0].content.parts[0].text;
+        const gradingData = JSON.parse(jsonStr);
+
+        // Calculate and Record Score safely
+        const awarded = Math.max(0, Math.min(q.marks, parseInt(gradingData.score) || 0));
+        questionScores[id] = awarded;
+
+        // Visual display logic based on strict grading
+        const isPerfect = awarded === q.marks;
+        const isZero = awarded === 0;
+
+        const boxColor = isPerfect ? 'emerald' : (isZero ? 'red' : 'amber');
+        const boxIcon = isPerfect ? 'fa-graduation-cap' : (isZero ? 'fa-xmark' : 'fa-check-to-slot');
+        const titleText = isPerfect ? "Perfect Working Evaluated" : (isZero ? "Needs Review" : "Partial Credit Awarded");
+
+        feedbackBox.className = `p-4 rounded-xl border bg-${boxColor}-50 border-${boxColor}-300 text-${boxColor}-900 text-xs space-y-2 shadow-sm`;
         feedbackBox.innerHTML = `
-          <div class="font-bold text-sm flex items-center justify-between border-b pb-2 border-emerald-200">
+          <div class="font-bold text-sm flex items-center justify-between border-b pb-2 border-${boxColor}-200">
             <span class="flex items-center gap-1.5">
-              <i class="fa-solid fa-graduation-cap text-base text-emerald-600"></i>
-              Score: ${scoreAwarded} / ${q.marks} Marks
+              <i class="fa-solid ${boxIcon} text-base text-${boxColor}-600"></i>
+              Score: ${awarded} / ${q.marks} Marks
             </span>
-            <span class="bg-emerald-200 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Solution Recorded</span>
+            <span class="bg-${boxColor}-200 text-${boxColor}-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">${titleText}</span>
           </div>
-          <p class="leading-relaxed font-medium mt-1">Excellent working submitted! Your step-by-step algebraic working has been recorded and assessed for full procedural credit.</p>
-          <ul class="list-disc pl-4 space-y-0.5 mt-1 text-[11px] text-emerald-800">
-            <li>Submissions check: Clear step-by-step algebraic working provided.</li>
-            <li>Verification: Intermediate operations and inverse manipulations shown.</li>
-          </ul>
+          <p class="leading-relaxed font-bold mt-1">AI Teacher Feedback:</p>
+          <div class="text-[12px] text-${boxColor}-800 mt-1 leading-relaxed">${gradingData.feedback}</div>
         `;
 
+      } catch (error) {
+        console.error("Evaluation Error:", error);
+        feedbackBox.className = "p-4 rounded-xl border bg-red-50 border-red-300 text-red-900 text-xs space-y-2 shadow-sm";
+        feedbackBox.innerHTML = `
+          <div class="font-bold text-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-triangle-exclamation text-red-600"></i> Grading Error
+          </div>
+          <p>The AI teacher experienced an issue while analyzing the image. Please try resubmitting.</p>
+        `;
+      } finally {
         submitBtn.disabled = false;
         submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
-        submitBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Submit Working`;
+        submitBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> AI Grade Working`;
 
         updateTotalScore();
 
@@ -652,7 +679,7 @@
           ],
           throwOnError: false
         });
-      }, 800);
+      }
     }
 
     function updateTotalScore() {
@@ -686,7 +713,6 @@
       updateTotalScore();
     }
 
-    // Initial Load Setup
     window.addEventListener('DOMContentLoaded', () => {
       randomizeAllQuestions();
     });
