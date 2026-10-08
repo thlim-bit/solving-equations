@@ -271,7 +271,7 @@
             </div>
 
             <div id="canvas-container-${q.id}" class="relative canvas-container border border-slate-300 rounded-lg overflow-hidden bg-white grid-bg">
-              <canvas id="canvas-${q.id}" width="1000" height="320" class="w-full h-[280px] block"></canvas>
+              <comment-tag id="1"><canvas id="canvas-${q.id}" width="1000" height="320" class="w-full h-[280px] block"></canvas></comment-tag id="1" text="<canvas id=&quot;canvas-${q.id}&quot; width=&quot;1000&quot; height=&quot;800&quot; class=&quot;w-full h-[600px] block&quot;></canvas>" type="suggestion">
               <span class="absolute bottom-2 right-3 text-[11px] text-slate-400 select-none font-mono">Annotate or Draw Working Here</span>
             </div>
 
@@ -290,7 +290,7 @@
                 </button>
               </div>
               <div id="upload-preview-container-${q.id}" class="hidden relative max-w-2xl mx-auto">
-                <img id="upload-preview-${q.id}" class="max-h-[300px] mx-auto rounded-lg border border-slate-200 shadow-sm object-contain" src="" alt="Uploaded Solution Preview" />
+                <comment-tag id="2"><img id="upload-preview-${q.id}" class="max-h-[300px] mx-auto rounded-lg border border-slate-200 shadow-sm object-contain" src="" alt="Uploaded Solution Preview" /></comment-tag id="2" text="<img id=&quot;upload-preview-${q.id}&quot; class=&quot;max-h-[600px] mx-auto rounded-lg border border-slate-200 shadow-sm object-contain&quot; src=&quot;&quot; alt=&quot;Uploaded Solution Preview&quot; />" type="suggestion">
                 <div class="mt-3 flex items-center justify-center gap-2 no-print">
                   <button onclick="document.getElementById('file-input-${q.id}').click()" class="px-3 py-1 bg-slate-800 text-white text-xs font-medium rounded-md hover:bg-slate-700">
                     <i class="fa-solid fa-arrows-rotate"></i> Change Photo
@@ -521,3 +521,6 @@
   </script>
 </body>
 </html>
+```eof
+
+*Suggestions added*
